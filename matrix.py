@@ -1,11 +1,10 @@
 import numpy as np
 
-class matrix:
-
+class Matrix:
 
 	""" This class helps to simulate some matrix operations for square matrices having order 2 or 3"""
-	
-
+			
+	matrix_count = 0
 	def __init__(self,arr,order):
 		
 		"""This is a constructor method that will make a matrix object.It requires 
@@ -14,6 +13,7 @@ class matrix:
 
 		self.arr = np.array(arr)
 		self.order = order
+		Matrix.matrix_count += 1
 
 		if self.order == 2:
 			self.a11 = self.arr[0][0] 
@@ -276,9 +276,73 @@ class matrix:
 				self.column = np.array([[self.a13],[self.a23],[self.a33]])
 		return self.column
 
+	def __repr__(self):
+		""" This for matrix object representation as array of integers"""
+		return f"matrix\n({self.arr},{self.order})"
+
+	def __str__(self):
+		""" This for matrix object representation in form of its determinant and order"""
+		return f"Order: {self.order}\nDeterminant: {self.determinant()}"
+
+	def __add__(self,other):
+		
+		"""For Matrix Addition of square matrices of same order"""
+		try:
+			return self.arr + other.arr
+
+		except:
+			return NotImplemented
+
+	def __sub__(self,other):
+		try:
+			"""For Matrix subtraction of square matrices of same order"""
+			return self.arr - other.arr
+		except:
+			return NotImplemented
+	def __mul__(self,other):
+		"""For Matrix multiplication of square matrices of same order"""
+		try:
+			if self.order == 2 and other.order == 2:
+				new_a11 = (self.a11*other.a11) + (self.a12*other.a21)
+				new_a12 = (self.a11*other.a12) + (self.a12*other.a22)
+
+				new_a21 = (self.a21*other.a11) + (self.a22*other.a21)
+				new_a22 = (self.a21*other.a12) + (self.a22*other.a22)
+
+				return np.array([[new_a11,new_a12],[new_a21,new_a22]])
+			elif self.order == 3 and other.order == 3:
+				new_a11 = (self.a11*other.a11) + (self.a12*other.a21) + (self.a13*other.a31)
+				new_a12 = (self.a11*other.a12) + (self.a12*other.a22) + (self.a13*other.a32)
+				new_a13 = (self.a11*other.a13) + (self.a12*other.a23) + (self.a13*other.a33)
+
+				new_a21 = (self.a21*other.a11) + (self.a22*other.a21) + (self.a23*other.a31)
+				new_a22 = (self.a21*other.a12) + (self.a22*other.a22) + (self.a23*other.a32)
+				new_a23 = (self.a21*other.a13) + (self.a22*other.a23) + (self.a23*other.a33)
+
+				new_a31 = (self.a31*other.a11) + (self.a32*other.a21) + (self.a33*other.a31)
+				new_a32 = (self.a31*other.a12) + (self.a32*other.a22) + (self.a33*other.a32)
+				new_a33 = (self.a31*other.a13) + (self.a32*other.a23) + (self.a33*other.a33)
+
+				return np.array([[new_a11,new_a12,new_a13],[new_a21,new_a22,new_a23],[new_a31,new_a32,new_a33]])
+		except:
+			return NotImplemented
+
+	@staticmethod
+	def is_square_mat(arr):
+		"""To determine if entered array represents square matrix or not
+			returns True if square matrix else False """
+		try:
+			rows = len(arr)
+			cols = [len(i) for i in arr]
+			if len(set(cols)) == 1 and cols[0] == rows:
+				return True
+			return False		
+
+		except:
+			return False
 # example
-my_mat = matrix([[1,1,1],[1,2,3],[9,5,6]],3)
-print("Orignal matrix")
+my_mat = Matrix([[1,1,1],[1,2,3],[9,5,6]],3)
+"""print("Orignal matrix")
 print(my_mat.get_matrix())
 print("-"*60)
 print("Transpose")
@@ -309,4 +373,5 @@ print(my_mat.is_singular())
 print('-'*60)
 print('Determinant of matrix')
 print(my_mat.determinant())
-#print(help(matrix))
+help(Matrix)"""
+
